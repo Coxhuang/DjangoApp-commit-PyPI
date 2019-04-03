@@ -1,155 +1,144 @@
-=====
-django-google-auth
-=====
 
-django-google-auth project is demo application for codingsoho
+[TOC]
 
-Detailed documentation is in the "docs" directory.
+# PyPI发布 Django App
 
-Quick start
------------
+## #0 GitHub
 
-# googleauth
+```
+https://github.com/Coxhuang/DjangoApp-commit-PyPI
+```
 
+## #1 环境
 
+```
+Python3.6
+```
 
-1. 安装 django-google-auth2
+## #2 开始
+
+### #2.1 安装twine
+
+```
+pip3 install twine
+```
+
+### #2.2 新建包(我的包名叫django-google-auth)
 
 
 ```
-pip3 install django-google-auth2
+.django-google-auth
+
+├── LICENSE 
+├── MANIFEST.in 
+├── README.md
+├── django_google_auth2 # django App
+│   ├── __init__.py
+│   ├── admin.py
+│   ├── apps.py
+│   ├── google
+│   ├── migrations
+│   ├── models.py
+│   ├── templates
+│   ├── templatetags
+│   ├── tests.py
+│   ├── urls.py
+│   ├── utils
+│   └── views.py
+└── setup.py
 ```
 
-2. 添加 django_google_auth2 到app
+- 把django app拷贝到django-google-auth目录下
+- 在django-google-auth目录下新建以下文件
 
 ```
-INSTALLED_APPS = [
-        ...
-        'django_google_auth2',
-    ]
+LICENSE  # 许可证
+MANIFEST.in # 把不是.py结尾的文件一起打包(如果没有该文件,默认只打包py文件)
+README.md # 项目描述 
+setup.py # 配置文件 
 ```
 
-3. 绑定google令牌
+### #2.3 MANIFEST.in
 
 ```
-from django_google_auth2.google.bindgoogleauth.bindgoogleauth import bind_google_auth
-
-bind_google_auth(user) 
-
-```
-
-
-**函数参数：** 
-
-|参数名|必选|类型|说明|
-|:----    |:---|:----- |-----   |
-|user |是  |string | 用户名 Or 邮箱   |
-
-
- **返回参数说明** 
-|参数名|类型|说明|
-|:-----  |:-----|-----                           |
-|success |bool   | True/False |
-|data |string   | google令牌字符串(用于生成二维码) |
-
-4. 解绑google令牌
-
-```
-from django_google_auth2.google.deletegoogleauth.deletegoogleauth import delete_google_auth
-
-
-delete_google_auth(user) 
-
-```
-
-
-**函数参数：** 
-
-|参数名|必选|类型|说明|
-|:----    |:---|:----- |-----   |
-|user |是  |string | 用户名 Or 邮箱   |
-
- **返回参数说明** 
-|参数名|类型|说明|
-|:-----  |:-----|-----|
-|success |bool   | True/False |
-|data |string   | 删除成功 |
-
-5. 验证google令牌
-
-```
-from django_google_auth2.google.checkgoogleauth.checkgoogleauth import check_google_auth
-
-
-
-check_google_auth(user,code) 
+include LICENSE 
+include README.md
+recursive-include django_google_auth2/google * # django_google_auth2/google * 下的所有文件全部打包
+recursive-include django_google_auth2/utils *
+recursive-include django_google_auth2/templatetags *
+recursive-include django_google_auth2/migrations *
+recursive-include django_google_auth2/templates *
 
 ```
 
-**函数参数：** 
-
-|参数名|必选|类型|说明|
-|:----    |:---|:----- |-----   |
-|user |是  |string | 用户名 Or 邮箱   |
-|code |是  |string | 客户端动态码    |
-
- **返回参数说明** 
-|参数名|类型|说明|
-|:-----  |:-----|-----|
-|success |bool   | True/False |
-
-
-6. 绑定google令牌Api接口
-
-
-urls.py
+### #2.4 setup.py
 
 ```
-from django_google_auth2.google.bindgoogleauth.bindgoogleauthapi import bind_google_auth_api
+import os
+from setuptools import find_packages, setup
 
+with open(os.path.join(os.path.dirname(__file__), 'README.md')) as readme:
+    README = readme.read()
 
-urlpatterns = [
-    ...
-    path('bing-google-auth-api/', bind_google_auth_api),
-]
+# allow setup.py to be run from any path
+os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
+setup(
+    name='django-google-auth2',
+    version='0.0.8',
+    packages=find_packages(),
+    include_package_data=True,
+    license='BSD License', # example license
+    description='django-google-auth2 project is demo application for google auth ',
+    long_description=README,
+    url='https://github.com/Coxhuang/django-google-auth',
+    author='黄民航',
+    author_email='gmhesat@gmail.com',
+    classifiers=[
+        'Environment :: Web Environment',
+        'Framework :: Django',
+        'Framework :: Django :: 2.0', # replace "X.Y" as appropriate
+        'Intended Audience :: Developers',
+        'License :: OSI Approved :: BSD License', # example license
+        'Operating System :: OS Independent',
+        'Programming Language :: Python',
+        # Replace these appropriately if you are stuck on Python 2.
+        'Programming Language :: Python :: 2',
+        'Programming Language :: Python :: 3.6',
+    ],
+)
 ```
 
-**请求方式：**
-- POST
+## #3 发布
 
- **请求示例**
+- 回到包的目录下
 
 ```
-{
-	"user":"cox"
-}
+# 打包
+python3 setup.py sdist
 ```
 
-**函数参数：** 
+```
+# 发布
+twine upload dist/*
+```
 
-|参数名|必选|类型|说明|
-|:----    |:---|:----- |-----   |
-|user |是  |string | 用户名 Or 邮箱   |
-
- **返回** 
- 
-![20190402192923-image.png](https://raw.githubusercontent.com/Coxhuang/yosoro/master/20190402192923-image.png)
+![20190403101203-image.png](https://raw.githubusercontent.com/Coxhuang/yosoro/master/20190403101203-image.png)
 
 
-7. 客户端(二选一)
+# 下载
 
-> 安卓App
+```
+pip3 install django-google-auth2==0.0.8
+```
 
-Google令牌+扫码器(如果手机只安装Google令牌App扫码失败,请安装扫码器)
 
-链接：https://pan.baidu.com/s/1XeO7p4IvNuvzQOiZrq4wtw
 
-提取码：e70f
 
-> Chrome插件
 
-https://chrome.google.com/webstore/detail/authenticator/bhghoamapcdpbohphigoooaddinpkbai
+
+
+
 
 
 
